@@ -241,7 +241,7 @@ class HaystackSerializer(six.with_metaclass(HaystackSerializerMeta, serializers.
 
         # include the highlighted field in either case
         if getattr(instance, "highlighted", None):
-            ret["highlighted"] = instance.highlighted[0]
+            ret["highlighted"] = instance.highlighted
         return ret
 
     def multi_serializer_representation(self, instance):
