@@ -316,7 +316,8 @@ class FacetFieldSerializer(serializers.Serializer):
         Haystack facets are returned as a two-tuple (value, count).
         The text field should contain the faceted value.
         """
-        instance = instance[0]
+        if isinstance(instance, int) or isinstance(instance, float):
+            return str(instance)
         if isinstance(instance, (six.text_type, six.string_types)):
             return serializers.CharField(read_only=True).to_representation(instance)
         elif isinstance(instance, datetime):
@@ -328,6 +329,8 @@ class FacetFieldSerializer(serializers.Serializer):
         Haystack facets are returned as a two-tuple (value, count).
         The count field should contain the faceted count.
         """
+        if isinstance(instance, float) or isinstance(instance, int):
+            return instance
         instance = instance[1]
         return serializers.IntegerField(read_only=True).to_representation(instance)
 
@@ -335,6 +338,8 @@ class FacetFieldSerializer(serializers.Serializer):
         """
         Return a link suitable for narrowing on the current item.
         """
+        if isinstance(instance, float) or isinstance(instance, int):
+            return instance
         text = instance[0]
         request = self.context["request"]
         query_params = request.GET.copy()

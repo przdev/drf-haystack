@@ -109,6 +109,8 @@ class FacetListField(fields.ListField):
     """
 
     def to_representation(self, key, data):
+        if isinstance(data, int) or isinstance(data, float):
+            return [self.child.to_representation(key, data)]
         return [self.child.to_representation(key, item) for item in data]
 
 

@@ -212,6 +212,9 @@ class HaystackFacetFilter(BaseHaystackFilterBackend):
 
         for field, options in applicable_filters["query_facets"].items():
             queryset = queryset.query_facet(field, **options)
+        
+        for field, options in applicable_filters["range_facets"].items():
+            queryset = queryset.range_facet(field, **options)
 
         return queryset
 
