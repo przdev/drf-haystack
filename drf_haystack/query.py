@@ -180,6 +180,7 @@ class FacetQueryBuilder(BaseQueryBuilder):
         field_facets = {}
         date_facets = {}
         query_facets = {}
+        range_facets = {}
         facet_serializer_cls = self.view.get_facet_serializer_class()
 
         if self.view.lookup_sep == ":":
@@ -212,13 +213,23 @@ class FacetQueryBuilder(BaseQueryBuilder):
                 options.setdefault("gap_amount", 1)
                 date_facets[field] = field_options[field]
 
+            elif any([k in options for k in ("range_start", "range_end", "range_gap")]):
+                if not all(("range_start", "range_end", "range_gap" in options)):
+                    raise ValueError("Date faceting requires at least 'range_start', 'range_end' "
+                                     "and 'range_gap' to be set.")
+                range_facets[field] = field_options[field]
+
+            elif all([k in options for k in ("query", )]):
+                query_facets[field] = field_options[field]
+
             else:
                 field_facets[field] = field_options[field]
 
         return {
             "date_facets": date_facets,
             "field_facets": field_facets,
-            "query_facets": query_facets
+            "query_facets": query_facets,
+            "range_facets": range_facets
         }
 
     def parse_field_options(self, *options):
